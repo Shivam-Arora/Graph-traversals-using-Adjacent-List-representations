@@ -36,6 +36,7 @@ struct Graph *createGraph(int V){
     for(i=0;i<V;i++){
         graph->array[i].head=NULL;
     }
+ //
 
     return graph;
 }
