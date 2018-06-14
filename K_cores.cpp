@@ -659,3 +659,97 @@ Output
 Square of  Maximum number of people covered by 4 towers
 
 	*/
+	/*
+	/*There will be a N Balloons marked with value Bi (where B(i…N)).
+User will be given Gun with N Bullets and user must shot N times.
+When any balloon explodes then its adjacent balloons becomes next to each other.
+User has to score highest points to get the prize and score starts at 0.
+Below is the condition to calculate the score.
+When Balloon Bi Explodes then score will be a product of Bi-1 & Bi+1 (score = Bi-I * Bi+1).
+When Balloon Bi Explodes and there is only left Balloon present then score will be Bi-1.
+When Balloon Bi Explodes and there is only right Balloon present then score will be Bi+1.
+When Balloon Bi explodes and there is no left and right Balloon present then score will be Bi.
+Write a program to score maximum points.
+Conditions:
+Execution time limits 3 seconds.
+No of Balloons N, where 1 <= N <= 10
+Bi value of the Balloon 1 <= Bi <= 1000.
+No two Balloons explode at same time.
+
+
+Input:
+Consists of TC (1 <= TC <= 50).
+N – No of Balloons.
+B0…..BN  N Balloons with their values .
+Output: 
+#TC SCORE
+
+Sample Input:
+5
+4
+1 2 3 4
+5
+3 10 1 2 5
+7
+12 48 28 21 67 75 85
+8
+245 108 162 400 274 358 366 166
+10
+866 919 840 944 761 895 701 912 848 799
+ 
+
+Sample Output:
+#1 20
+#2 100
+#3 16057
+#4 561630
+#5 6455522
+
+*/
+
+#include<iostream>
+using namespace std;
+int balloon[100];
+
+int getmaxpoint(int l,int r,int n)
+{
+  int maxscore=0;
+  for(int i=l+1;i<=r-1;i++)
+  {
+    int current_sum=0;
+    current_sum=getmaxpoint(l,i,n)+getmaxpoint(i,r,n);
+    if(l==0 && r==n+1)
+    current_sum=current_sum+balloon[i];
+    else
+    current_sum=current_sum+balloon[l]*balloon[r];
+    cout<<"l= "<<l<<" "<<"r="<<r<<" "<<"i= "<<i<<" "<<"current_sum= "<< current_sum<<endl;
+    if(current_sum>maxscore)
+    maxscore=current_sum;
+  }
+  return maxscore;
+}
+
+
+
+int main()
+{
+  int t,n;
+  cin>>t;
+  while(t--)
+  {
+    cin>>n;
+    balloon[0]=1;
+    balloon[n+1]=1;
+    for(int i=1;i<=n;i++)
+    {
+      cin>>balloon[i];
+    }
+    
+    int ans=getmaxpoint(0,n+1,n);
+    cout<<ans<<endl;
+  }
+  return 0;
+  
+  
+}
+	*/
