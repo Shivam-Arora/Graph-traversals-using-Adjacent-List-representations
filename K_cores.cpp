@@ -753,3 +753,252 @@ int main()
   
 }
 	*/
+
+		
+		
+		/*
+		// GalaxyYesSix.cpp : Defines the entry point for the console application.
+//
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+
+#define MAX_N 100
+
+char adjM[MAX_N + 1][MAX_N + 1];
+char resM[MAX_N + 1][MAX_N + 1];
+char visitedZ[MAX_N][MAX_N];
+char visitedN[MAX_N][MAX_N];
+char visitedRepZ[MAX_N][MAX_N];
+char visitedRes[MAX_N][MAX_N];
+
+#define TOP(i,j,x,y) (x=i-1,y=j);
+#define LEFT(i,j,x,y) (x=i,y=j-1);
+#define RIGHT(i,j,x,y) (x=i,y=j+1);
+#define BOTTOM(i,j,x,y) (x=i+1,y=j);
+
+#define DFS_Z_SUB_COND	if(( x >=0 && x < N ) && ( y >= 0 && y < N))\
+{ \
+if ((adjM[x][y] == 0) && (!visitedZ[x][y])) \
+{\
+	applyDFS_Z_Sub(x, y); \
+}\
+							else if ((adjM[x][y] != 0) && (!visitedN[x][y])) \
+{\
+	applyDFS_N(x, y, adjM[x][y]); \
+}\
+}
+
+#define DFS_N_COND( adjMat, num, funcDFS, visited)	if(( x >=0 && x < N ) && ( y >= 0 && y < N))\
+{\
+if ((adjMat[x][y] == (num)) && (!visited[x][y]))\
+{\
+	funcDFS(x, y, (num)); \
+}\
+}
+
+#define DFS_Z_REPLACE_COND(num, resMat)	if(( x >=0 && x < N ) && ( y >= 0 && y < N))\
+{\
+if ((resMat[x][y] == 0) && (!visitedRepZ[x][y]))\
+{\
+	applyDFS_Z_replace(x, y, (num)); \
+}\
+}
+
+int maxArr[MAX_N + 1];
+int N;
+int boothCnt;
+
+int findMaxElem()
+{
+	int i;
+	int max = 0;
+	int num;
+	for (i = 1; i <= MAX_N; i++)
+	{
+		if (maxArr[i] >= max)
+		{
+			max = maxArr[i];
+			num = i;
+		}
+	}
+
+	return num;
+}
+
+void applyDFS_Z_replace(int i, int j, int num)
+{
+	int x, y;
+	visitedRepZ[i][j] = 1;
+	resM[i][j] = num;
+
+	//Top
+	TOP(i, j, x, y)
+		DFS_Z_REPLACE_COND(num, resM)
+
+		//Left
+		LEFT(i, j, x, y)
+		DFS_Z_REPLACE_COND(num, resM)
+
+		//Right
+		RIGHT(i, j, x, y)
+		DFS_Z_REPLACE_COND(num, resM)
+
+		//Bottom
+		BOTTOM(i, j, x, y)
+		DFS_Z_REPLACE_COND(num, resM)
+}
+
+
+void applyDFS_N(int i, int j, int elem)
+{
+	int x, y;
+
+	visitedN[i][j] = 1;
+	maxArr[elem]++;
+
+	//Top
+	TOP(i, j, x, y)
+		DFS_N_COND(adjM, elem, applyDFS_N, visitedN)
+
+		//Left
+		LEFT(i, j, x, y)
+		DFS_N_COND(adjM, elem, applyDFS_N, visitedN)
+
+		//Right
+		RIGHT(i, j, x, y)
+		DFS_N_COND(adjM, elem, applyDFS_N, visitedN)
+
+		//Bottom
+		BOTTOM(i, j, x, y)
+		DFS_N_COND(adjM, elem, applyDFS_N, visitedN)
+}
+
+void applyDFS_Z_Sub(int i, int j)
+{
+	int x, y;
+	visitedZ[i][j] = 1;
+
+	//Top
+	TOP(i, j, x, y)
+		DFS_Z_SUB_COND
+
+		//Left
+		LEFT(i, j, x, y)
+		DFS_Z_SUB_COND
+
+		//Right
+		RIGHT(i, j, x, y)
+		DFS_Z_SUB_COND
+
+		//Bottom
+		BOTTOM(i, j, x, y)
+		DFS_Z_SUB_COND
+}
+
+void applyDFS_Z_Main()
+{
+	int i, j;
+	int maxElem = 0;
+	int p, q;
+
+	for (i = 0; i<N; i++)
+	{
+		for (j = 0; j<N; j++)
+		{
+			if (adjM[i][j] == 0 && !visitedZ[i][j])
+			{
+				applyDFS_Z_Sub(i, j);
+				maxElem = findMaxElem();
+				applyDFS_Z_replace(i, j, maxElem);
+				for (p = 0; p<N; p++)
+				{
+					for (q = 0; q<N; q++)
+					{
+						visitedN[p][q] = 0;
+					}
+				}
+
+				for (p = 1; p <= N; p++)
+					maxArr[p] = 0;
+
+			}
+		}
+	}
+}
+
+void applyDFS_Count_Booths_Sub(int i, int j, int num)
+{
+	int x, y;
+	visitedRes[i][j] = 1;
+
+	//Top
+	TOP(i, j, x, y)
+		DFS_N_COND(resM, num, applyDFS_Count_Booths_Sub, visitedRes)
+
+		//Left
+		LEFT(i, j, x, y)
+		DFS_N_COND(resM, num, applyDFS_Count_Booths_Sub, visitedRes)
+
+		//Right
+		RIGHT(i, j, x, y)
+		DFS_N_COND(resM, num, applyDFS_Count_Booths_Sub, visitedRes)
+
+		//Bottom
+		BOTTOM(i, j, x, y)
+		DFS_N_COND(resM, num, applyDFS_Count_Booths_Sub, visitedRes)
+}
+
+void applyDFS_Count_Booths()
+{
+	int i, j;
+	int maxElem = 0;
+
+	for (i = 0; i<N; i++)
+	{
+		for (j = 0; j<N; j++)
+		{
+			if (!visitedRes[i][j])
+			{
+				applyDFS_Count_Booths_Sub(i, j, resM[i][j]);
+				boothCnt++;
+			}
+		}
+	}
+}
+
+
+int main()
+{
+	int T;
+	int testCase, i, j;
+	freopen("input.txt", "r", stdin);
+	scanf("%d", &T);
+
+	for (testCase = 1; testCase <= T; testCase++)
+	{
+		scanf("%d", &N);
+
+		for (i = 0; i<N; i++)
+		{
+			for (j = 0; j<N; j++)
+			{
+				scanf("%d", &adjM[i][j]);
+				resM[i][j] = adjM[i][j];
+				visitedN[i][j] = 0;
+				visitedZ[i][j] = 0;
+				visitedRepZ[i][j] = 0;
+				visitedRes[i][j] = 0;
+			}
+			maxArr[i] = 0;
+		}
+
+		boothCnt = 0;
+
+		applyDFS_Z_Main();
+		applyDFS_Count_Booths();
+
+		printf("\r\n #%d: %d", testCase, boothCnt);
+	}
+}
+		*/
