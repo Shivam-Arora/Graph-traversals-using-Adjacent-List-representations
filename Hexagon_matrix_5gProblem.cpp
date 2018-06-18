@@ -78,3 +78,66 @@ int main(){
 	}
 	cout << maxct << endl;
 }
+/*#include<iostream>
+#include<utility>
+#include<vector>
+#include<algorithm>
+using namespace std;
+#define ll long long
+int main(){
+	int n,k;
+	cin >> n >> k;
+
+	pair<int,int> *power=(pair<int,int> *)malloc(n*sizeof(pair<int,int> ));
+	int *coins = (int *)malloc(n*sizeof(int));
+
+	for(int i = 0; i < n; i++){
+		cin >> power[i].first;
+		power[i].second=i;
+	}
+
+	for(int i = 0; i < n; i++){
+		cin >> coins[i];
+	}
+
+	if(k == 0){
+		for(int i = 0; i < n; i++){
+			cout << coins[i] << " ";
+		}
+		return 0;
+	}
+
+	vector<int> vec;
+	for(int i = 0; i <k; i++){
+		vec.push_back(0);
+	}
+
+	sort(power,power+n);
+	
+	pair<int,int> *ans=(pair<int,int> *)malloc(n*sizeof(pair<int,int> ));
+	
+	for(int i = 0; i < n; i++){
+		int sum=0;
+		for(int j = 0; j < k; j++){
+			sum = sum + vec[j];
+		}
+		sum = sum + coins[power[i].second];
+		if(vec[0] < coins[power[i].second]){
+			vec[0] = coins[power[i].second];
+		}
+		sort(vec.begin(), vec.end());
+		ans[i].first = power[i].second;
+		ans[i].second=sum;
+
+	}
+	sort(ans,ans+n);
+	for(int i = 0; i < n; i++){
+		cout << ans[i].second << " ";
+	}
+
+	system("pause");
+
+
+
+
+}*/
