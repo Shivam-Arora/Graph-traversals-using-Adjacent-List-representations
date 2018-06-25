@@ -175,3 +175,35 @@ figure
     xlabel('Iteration');
     ylabel('Observed Data Log-likelihood');
     grid minor;
+    
+    
+    
+    function [Mu, Sigma, Gamma] = gmm(X, num_clusters)
+    [num_samples, dim] = size(X);
+     
+    Mu = rand(num_clusters, dim);
+    Sigma = zeros(dim, dim, num_clusters);
+    for k = 1: num_clusters
+        Sigma(:,:,k) = eye(dim);
+    end;
+    Npdf = zeros(num_samples, num_clusters);
+    
+    pi = (num_samples / num_clusters) * ones(num_clusters, 1);    
+    num_iters = 0;
+    while num_iters < 100
+        for k = 1: num_clusters
+            Npdf(:,k) = mvnpdf(X, Mu(k,:), Sigma(:,:,k));
+        end;
+        Gamma = diag(1 ./ (Npdf * pi)) * (Npdf * diag(pi));
+        
+        num_per_cluster = sum(Gamma)';
+        pi = num_per_cluster / num_samples;
+        Mu = diag(1 ./ num_per_cluster) * Gamma' * X;
+        for k = 1: num_clusters
+            Bias = X - ones(num_samples, 1) * Mu(k,:);
+            Sigma(:,:,k) = (1 / num_per_cluster(k)) * (Bias' * diag(Gamma(:,k)) * Bias);
+        end;        
+        num_iters = num_iters + 1;
+    end;
+end
+    
