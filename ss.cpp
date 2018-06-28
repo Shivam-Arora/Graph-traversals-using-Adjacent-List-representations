@@ -791,3 +791,133 @@ int main(){
 	}
 	system("pause");
 }
+//------------------
+#include<iostream>
+using namespace std;
+
+int CPU;
+int MEM;
+int BRD;
+int price_cpu,price_mem;
+int n;
+int maxnum[12];
+
+struct product{
+	int cpu;
+	int mem;
+	int board;
+	int price;
+}p[10];
+
+int findmax(int index){
+	if( p[index].cpu * CPU + p[index].mem * MEM >=p[index].price ){
+		return 0;
+	}
+	else{
+		return(min(min(BRD/p[index].board,CPU/p[index].cpu),MEM/p[index].mem));
+	}
+}
+
+
+bool canproceed(int remaining[]){
+	if(remaining[0]<0 || remaining[1]<0 || remaining[2]<0){
+		return false;
+	}
+	return true;
+}
+
+int decrease(int remaining[],int index,int i){
+	if(i!=0){
+		remaining[0] -= p[index].cpu;
+		remaining[1] -= p[index].mem;
+		remaining[2] -= p[index].board;
+	}
+	return(canproceed(remaining));
+}
+int increase(int remaining[],int index,int x){
+	remaining[0] += (p[index].cpu)*x;
+	remaining[1] += (p[index].mem)*x;
+	remaining[2] += (p[index].board)*x;
+}
+
+
+int main(){
+	int t;
+	cin >> t;
+	
+	while(t--){
+		
+
+		cin >> CPU >> MEM >> BRD >> price_cpu >> price_mem;
+		cin >> n;
+
+		for(int i=0;i<n;i++){
+			cin >> p[i].cpu >> p[i].mem >> p[i].board >> p[i].price;
+		}
+		for(int i=0;i<n;i++){
+			maxnum[i]=findmax(i);
+		}
+
+		int max_ans=-99999;
+		int remaining[3];
+		for(int i=0;i<n;i++){
+			for(int j=0;j<n;j++){
+				for(int k=0;k<n;k++){
+					remaining[0]=CPU;
+					remaining[1]=MEM;
+					remaining[2]=BRD;
+
+					for(int x=0;x<=maxnum[i];x++){
+						if(decrease(remaining,i,x)==0){
+							break;
+						}
+						int y=0;
+						for(;y<=maxnum[j];y++){
+							if(decrease(remaining,j,y)==0){
+								y++;
+								break;
+							}
+							int z=0;
+							for(;z<=maxnum[k];z++){
+								if(decrease(remaining,k,z)==0){
+									z++;
+									break;
+								}
+								int curr = x*p[i].price + y*p[j].price + z*p[k].price + remaining[0]*price_cpu + remaining[1].price_mem ;
+								max_ans=max(max_ans,curr);
+
+								if(k<2){
+									z++;
+									break;
+								}
+							}
+							increase(remaining,k,z-1);
+							if(j<1){
+								y++;
+								break;
+							}
+						}
+						increase(remaining,j,y-1);
+					}
+					
+
+				}
+				if(j>=n-1){
+					break;
+				}
+			}
+			if(i>=n-2){
+				break;
+			}
+		}
+
+
+		cout << max_ans << endl;
+
+
+
+
+  
+	}
+}
+
