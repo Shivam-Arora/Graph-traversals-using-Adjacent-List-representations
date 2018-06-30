@@ -1,0 +1,229 @@
+% VarDial 2018 paper template for we-are-indian
+% Based on coling2018.tex
+
+\documentclass[11pt]{article}
+\usepackage{coling2018}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+
+%\setlength\titlebox{5cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+
+\title{IIT (BHU) System for Indo-Aryan Language Identification (ILI) at VarDial 2018}
+% NOTE:
+% Give your paper a descriptive title, possibly mentioning your methodology/approach.
+% You don't need to include your team's name in the title. For example:
+%  - Classifier Combination for German Dialect Identification
+%  - Arabic Dialect Identification using large scale lexical features
+
+
+\author{Divyanshu Gupta, Gourav Dhakad, Jayprakash Gupta and Anil Kumar Singh \\
+  Computer Science and Engineering \\
+  Indian Institute of Technology (Banaras Hindu University)  \\
+  Varanasi-221005, India \\
+  {\{divyanshu.gupta.cse15, gourav.dhakad.cse15,  jayprakash.gupta.cse15, aksingh.cse\}@iitbhu.ac.in} \\}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Text language Identification is a Natural Language Processing (NLP) task of identifying and recognizing a given language out of many different languages from a piece of text. In the present scenario, this task has become the basis and beginning step of various other NLP tasks, for example, Machine Translation, improving search relevance for a multilingual query, processing code-switched data etc. The biggest limitation of many Language Identification systems is not being able to differentiate between closely related languages. This paper describes our submission to the ILI 2018 shared-task, which includes the identification of 5 closely related Indo-Aryan languages. We used a word-level LSTM (Long Short-Term Memory) model, a specific type of Recurrent Neural Network model, for this task. Given a sentence, our model embeds each word of the sentence and convert into its trainable word embedding, feeds them into our LSTM network and finally predict the language. We obtained an F1 macro score of 0.836, ranking 5th in the task.
+\end{abstract}
+
+
+
+
+\section{Introduction}
+\label{intro}
+
+\blfootnote{
+    %
+    % for review submission
+    %
+    \hspace{-0.65cm}  % space normally used by the marker
+    Place licence statement here for the camera-ready version. See
+    Section~\ref{licence} of the instructions for preparing a
+    manuscript.
+    %
+    % % final paper: en-uk version 
+    %
+    % \hspace{-0.65cm}  % space normally used by the marker
+    % This work is licensed under a Creative Commons 
+    % Attribution 4.0 International Licence.
+    % Licence details:
+    % \url{http://creativecommons.org/licenses/by/4.0/}.
+    % 
+    % % final paper: en-us version 
+    %
+    % \hspace{-0.65cm}  % space normally used by the marker
+    % This work is licensed under a Creative Commons 
+    % Attribution 4.0 International License.
+    % License details:
+    % \url{http://creativecommons.org/licenses/by/4.0/}.
+}
+
+In the present scenario, language identification (LID) has become an important problem in the field of
+Natural Language Processing due to its wide range of applications. The Language Identification task has become an important step of various other NLP tasks, for example, Machine Translation, improving search
+relevance for a multilingual query, named entity recognition in code-switched data etc. The difficulty for Language Identification systems at present is that it is hard for them to differentiate between closely related languages. In this paper, we try out a language
+identification system that basically focuses on language identification of closely related Indian (Indo-Aryan) languages, i.e., Hindi, Awadhi, Magahi, Bhojpuri, and Braj. Language Identification is of special significance for multilingual countries like India.
+
+The ILI shared task \cite{vardial2018report} focuses on identification of 5 closely related languages. The shared task also included an open track that allows additional resources, but we have only participated in the closed track that is, we performed closed training on the ILI dataset provided \cite{KUMAR18.26}.
+ 
+The motivation behind our work is to find out how to build a system which can distinguish between closely related language over a domain. In the Indian context, it is a very important problem, since India is has a large linguistic diversity, such that many of the languages/dialects/varieties are spoken by a large number of speakers. Many of these are closely related. There are also a large number of text documents which consist of a combination of two or more languages (due to code-switching or code-mixing). So, a system must be developed to serve the purpose. Even though language identification was one of the first NLP problems for which statistical techniques were applied, there is still a lot of scope for improvement in the performance of language identification systems for closely related languages. The shared task provided us a good opportunity to participate and find out the state-of-the-art for this problem. Due to the diversity in its languages, the given task could be an important step in bridging the digital divide between the Indian masses and the world.
+
+For the shared task, we initially used character level n-gram based statistical approaches with various distance measures like mutual information \cite{zamora2014tweets}, out of place measure \cite{singh2014language} etc. But the result was not satisfactory for closely related languages in the task, although these approaches worked very well for distant languages. We then moved to an LSTM-based word-level model which has improved our results. Generally, the traditional statistical approaches (N-gram modelling), which do not take sequences into account, are useful for distant languages, but in the case of closely related languages, sequence modelling approaches such as LSTM give better results, since these approaches effectively utilize the internal dependencies existing between words of sentences.
+
+\section{Related Work}
+
+Quite often, even human beings are unable to correctly identify similar languages. The accuracy attained by previous works on language identification is over 95 percent for distant languages, but for closely related language, the numbers are still significantly lower. In previous years' reports, there is available a detailed description of the methods, the datasets and their limitations. Here we briefly summarize these.
+
+Most of the reports show that sequence modelling approaches are better than other classical approaches, such as n-gram (with distance metric as out of place measure \cite{singh2014language} ), SVM, graph-based n-gram method, for identifying the language. In some cases, where the task is mainly focused on short sentences, linear SVM and maximum entropy models are performing better. It is also noted that Bhojpuri and Magahi are much more similar and too difficult to distinguish through the n-gram approach.
+
+For distant langauges, using an n-gram based approach, it was noted that character level n-grams are more appropriate than word-level n-grams. This may be due to the limitation caused by out of vocabulary words present in the given text document. It was also found that using a combination of six, seven and eight character n-grams to train the model gave better accuracy.
+
+\section{Methodology}
+
+We formulate the task as a multi-class classification problem where each language is a distinct class. So, for a given sentence, our task is to find the appropriate language class for that sentence. The prediction of language class is carried out with the help of Long Short-Term Memory (LSTM) network architecture \cite{gonzalez2014automatic}, which is a special kind of Recurrent Neural Networks (RNNs). The overall description of our system is given in the following section.
+
+\noindent \textbf{Input}
+ ~\\
+ The input of the model is a sentence of words of an unknown language to be identified.
+ 
+\noindent \textbf{Output}
+ ~\\
+The output will be a language class (the language name) corresponding to the given sentence. We will get a probability vector of $shape(1,5)$ that we pass through an $argmax$ layer to extract the index of the most likely language label.
+
+\noindent \textbf{Steps Involved}
+ ~\\
+\begin{enumerate}
+    \item The first step is to convert an input sentence into a word vector representation.
+    \item We train 50-dimensional GloVe vector word embedding during the training phase of LSTMs. 
+    \item Finally, we feed GloVe vector representation of each word in a given sentence of unknown language label into the LSTM hidden layers and predict the most appropriate language label for the sentence.
+\end{enumerate}
+
+\noindent \textbf{Mini-batching}
+ ~\\
+We are using Keras as the framework for implementing LSTM for our task. In our project, we will train LSTMs using mini-batches. Note that the most basic requirement of a Deep Learning framework is that all sequences in the same mini-batch have the same length. This is what vectorization helps us to work out in this case. If we had a five words sentence and, say, a seven words sentence, then the computations and calculations needed for them are quite different (one will take five steps of LSTMs, and other takes seven steps), so it is not possible for both to be processed in the same way.
+
+The common solution for this problem is to use padding. We set a maximum limit on the sequence length and pad all the sentences to the same length. The padding could be done in two ways:
+
+\begin{enumerate}
+\item Forward padding
+\item Backward padding
+\end{enumerate}
+Forward padding is suited and chosen over backward padding since forward padding does not face many problems of vanishing gradient problem as compared to Backward Padding. For example, if we set padding as 40 words, the sentence longer than 40 words will be truncated. One simple way to choose padding length is to just choose the length of longest sentence in training set.
+
+\noindent \textbf{Embedding Layer}
+ ~\\
+In Keras, the embedding matrix is displayed as an embedding layer and maps word indices to their word embedding vectors. The main aim of this layer is to convert a matrix of indices of words of input sentences into their word embedding GloVe vectors.
+
+\noindent \textbf{Building Model Architecture and Hyper-parameter Tuning}
+~\\
+After creating embedding matrix, we need to decide on the architecture of our LSTM model. We choose some number of hidden layers, Dropout value, etc. to create the LSTM model. These details are given in Section 3.1.
+
+After creating the architecture, we compile the model with loss function as \textbf{cross-entropy loss}, optimizer as \textbf{Adam optimizer} and metrics as \textbf{accuracy}. The number of epochs and batch size are also tuned for getting improved results.
+
+~\\
+\noindent \textbf{Testing the Model}
+~\\
+
+Finally, after training the model, the unknown sentence is feed into LSTMs to predict the most likely language label for that sentence.
+
+\subsection{Training Details}
+
+We train the entire LSTM model jointly, including the embedding layers. We used Adam optimization \cite{kingma2014adam} with the original parameters that are the default, and the loss function used is cross-entropy. Our implementation is done with the help of Keras framework. The model is run with 
+shuffled mini-batches of sizes 128 and the epochs were ended when the loss in the developmental set stopped improving.
+
+We did hyperparameter tuning by trying out various values, and the best results were observed with following values of hyperparameters: Mini-batch size of 128, Number of hidden layers in LSTM cell to 128, Number of epochs used were 36 and dropout value is 0.45.
+
+
+\section{Results}
+\label{sec:results}
+
+The result of our system on various runs are described in this section. The scores of various metrics in the best run is also shown in the table.
+
+
+\begin{table*}[h]
+\center
+\begin{tabular}{|ll|}
+\hline
+\bf System & \bf F1 (macro) \\ 
+\hline
+Random Baseline & 0.2024 \\
+\hline
+\textbf{01} & \textbf{0.8360} \\
+02 & 0.7444 \\
+03 & 0.8269 \\
+\hline
+\end{tabular}\\
+\\
+%TODO : you should write a descriptive caption
+\caption{Results for the ILI task. Best results out of our runs are in bold.}
+\label{tab:results-ILI-open}
+\end{table*}
+
+
+The confusion matrix for our best run is shown in Figure 1. 
+
+\begin{table}[!]
+\begin{center}
+\begin{tabular}{|l|l|l|}  \hline
+\textbf{Metric} & \textbf{Score} \\ \hline
+Accuracy & 0.8478 \\ \hline
+F1-micro & 0.8478 \\ \hline
+F1-macro & 0.8360 \\ \hline
+F1-weighted & 0.8442\\ \hline
+
+\end{tabular}\label{cht2}
+\end{center}
+\caption{Table showing result of various metric in best run}
+\end{table}
+ \vskip 2in
+
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.8\textwidth]{ILI_task,_we_are_indian_01.pdf}
+%TODO : add your own details to the caption for this figure
+\caption{ILI task: Confusion Matrix of our best run}
+\label{fig:1}
+\end{figure*}
+
+The results of different approaches used for implementing the task reveal that the best result is observed when we used sequence modelling approaches, i.e., by using the LSTM architecture, with which we achieved F1-macro score of 0.8360. In our second run, we used statistical n-gram approach with mutual information \cite{zamora2014tweets} as the distance measure, in which we achieved F1-macro score of 0.7444. The reason for above result, could be the inability of n-gram approach to distinguish closely related languages, particularly, Bhojpuri and Magahi. The above method was unable to model the internal dependencies between the words of the sentence. So, we used sequence modelling approaches using LSTMs. The reason is that LSTMs can remember long-range dependencies among the words of the sentences.
+
+\section{Conclusion}
+
+The major conclusions which we can draw from our work in this shared task are:
+
+\begin{enumerate}
+\item In n-gram model, the result were improved when we increased the n-value. The combination of 6, 7 and 8-gram model yield the best result.
+\item While tuning our n-gram model, we concluded that results of character-level n-gram model were much better than that of word-level n-gram model.
+\item N-gram approach was not able to distinguish effectively between Bhojpuri and Magahi due to the high degree of similarity between them. So, the sequence modelling approach was implemented to remember internal dependencies existing between words in the sentences.
+\item The hyperparameter tuning was performed, and the best results were observed for LSTM model when mini-batch size was 128, the number of Hidden layers in LSTM was 128, with the dropout of 0.45 and number of epochs used were 36. 
+\item For smoothing the gradient descent, we used Adam optimization algorithm and the loss function used was the cross-entropy loss.
+\end{enumerate}
+
+\section{Future work}
+In future, we would like to apply our method to other natural language processing tasks such as multilingual search query, dialect identification, etc.
+
+\bibliography{vardial2018}
+\bibliographystyle{acl}
+
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Thank you for participating in VarDial 2018!                 %
+%                                                                %
+%   We look forward to reading your system description papers.   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
