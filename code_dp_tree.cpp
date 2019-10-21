@@ -21,7 +21,7 @@ void fill(vector<int> tree[],int s,int par,int ht){
     }
     
 }
-
+//Running DFS on given Tree.
 int dfs(vector<int> tree[],int k,int s,int par,int ht){
     if(dp[s][k]!=-1){
         return(dp[s][k]);
@@ -44,7 +44,7 @@ int dfs(vector<int> tree[],int k,int s,int par,int ht){
     for(int i=0;i<tree[s].size();i++){
         int v=tree[s][i];
         if(v!=par){
-            ans=max(ans,dfs(tree,k,v,s,ht+1));
+            ans=max(ans,dfs(tree,k,v,s,ht+1)); 	
         }
     }    
     
@@ -92,6 +92,7 @@ int main()
         vector<int> tree[100];
         
         int a,b;
+	//Adding TreeNodes as undirected Graph.
         for(int i=0;i<e;i++){
             cin >> a >> b;
             tree[a].push_back(b);
@@ -112,7 +113,7 @@ int main()
 	
 	return 0;
 }
-
+//Just Copy following input to test.
 /*
 1
 12 11 2 8
