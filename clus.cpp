@@ -55,6 +55,7 @@ void apply_DFS_N(int i, int j, int elem){
 	visitedN[i][j] = 1;
 
 	int x, y;
+	//Checking in all directions.
 	//top
 	x = i - 1, y = j;
 	if(x >= 0 && x < n && y >= 0 && y < n){
