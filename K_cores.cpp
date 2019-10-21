@@ -101,11 +101,11 @@ void printKCores(struct Graph *graph,int k){
 	cout << "K-CORES PRINTING" << endl;
 	for(int i=0;i<graph->V;i++){
 		if(arr[i]>=k){
-			cout << "[" << i << "]" ;	
+			cout << "[" << i << "]" ;	// Printing Vertice and it's Core
 			struct adjlistnode *temp = graph->array[i].head;
 			while(temp!=NULL){
 				if(arr[temp->dest]>=k){
-					cout << " -> " << temp->dest << " ";
+					cout << " -> " << temp->dest << " "; //printing K-Cores
 				}
 				temp=temp->next;
 			}
